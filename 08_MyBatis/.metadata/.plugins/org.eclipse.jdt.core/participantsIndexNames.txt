@@ -1,0 +1,9 @@
+INDEX VERSION 1.134
+/Users/easymook/workspace/08_MyBatis/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3053822684.index
+/mybatisProject/src/main/java
+/Users/easymook/workspace/08_MyBatis/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/2216834518.index
+/mybatisProject/src/main/java
+/Users/easymook/workspace/08_MyBatis/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/588065013.index
+/mybatisProject/src/main/java
+/Users/easymook/workspace/08_MyBatis/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3050782077.index
+/mybatisProject/src/main/java

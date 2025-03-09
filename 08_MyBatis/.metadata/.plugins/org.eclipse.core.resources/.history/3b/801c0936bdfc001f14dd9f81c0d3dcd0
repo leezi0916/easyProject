@@ -1,0 +1,15 @@
+package com.kh.mybatis.board.model.vo;
+
+
+	public class sadf {
+	    public static void main(String[] args) {
+	        TestLombok test = new TestLombok();
+	        test.setName("홍길동");
+	        test.setAge(30);
+
+	        System.out.println(test.getName()); // 홍길동
+	        System.out.println(test.getAge());  // 30
+	        System.out.println(test);           // TestLombok(name=홍길동, age=30)
+	    }
+	}
+	
