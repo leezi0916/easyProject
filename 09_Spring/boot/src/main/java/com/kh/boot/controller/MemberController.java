@@ -194,7 +194,12 @@ public class MemberController {
             model.addAttribute("errorMsg","회원가입실패");
             return "common/errorPage";
         }
+    }
+
+    @GetMapping("myPage.me")
+    public String myPage(){
+        return "member/myPage";
+    }
 
 
-        }
 }
