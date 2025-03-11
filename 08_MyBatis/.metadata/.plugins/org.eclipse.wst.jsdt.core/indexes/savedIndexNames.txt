@@ -1,6 +1,5 @@
 INDEX VERSION 1.4+/Users/easymook/workspace/08_MyBatis/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
 2025860922.index
-3053822684.index
 1313682850.index
 2442626208.index
 4178141612.index
