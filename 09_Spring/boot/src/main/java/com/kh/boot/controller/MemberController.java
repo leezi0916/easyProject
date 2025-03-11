@@ -142,7 +142,7 @@ public class MemberController {
     3. ModelAndView객체를 이용한 방법 -> 데이터를 담고 리턴형식까지 지정할 수 있음
      */
     @PostMapping("login.me")
-    public ModelAndView login(@ModelAttribute Member member, ModelAndView mv, HttpSession session) {
+    public ModelAndView login(Member member, ModelAndView mv, HttpSession session) {
 
         //url재요청을 원할시 return내용을 redirect:재요청url로 해주면 됨
         Member loginMember = memberService.loginMember(member);
@@ -186,6 +186,7 @@ public class MemberController {
         member.setUserPwd(pwd);
 
         int result = memberService.insertMember(member);
+        System.out.println(result);
         if(result > 0) {
             session.setAttribute("alertMsg", "성공적으로 회원가입을 완료하였습니다.");
             return "redirect:/";
