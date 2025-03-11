@@ -88,35 +88,35 @@ public class MemberController {
 //    }
 
     //2. HttpSession이용한 값저장 후 url재요청
-    @PostMapping("login.me")
-    public String login(@ModelAttribute Member member, HttpSession session) {
-
-        System.out.println(member.getUserId());
-        System.out.println(member.getUserPwd());
-
-        session.setAttribute("id", member.getUserId());
-        session.setAttribute("pwd", member.getUserPwd());
-
-        //url재요청을 원할시 return내용을 redirect:재요청url로 해주면 됨
-        return "redirect:/";
-    }
-
-    /*
-    3. ModelAndView객체를 이용한 방법 -> 데이터를 담고 리턴형식까지 지정할 수 있음
-     */
 //    @PostMapping("login.me")
-//    public ModelAndView login(@ModelAttribute Member member, ModelAndView mv) {
-//        DispatcherServlet dispatcherServlet = new DispatcherServlet();
+//    public String login(@ModelAttribute Member member, HttpSession session) {
 //
 //        System.out.println(member.getUserId());
 //        System.out.println(member.getUserPwd());
 //
-//        mv.addObject("id", member.getUserId());
-//        mv.addObject("pwd", member.getUserPwd());
-//
-//        mv.setViewName("redirect:/");
+//        session.setAttribute("id", member.getUserId());
+//        session.setAttribute("pwd", member.getUserPwd());
 //
 //        //url재요청을 원할시 return내용을 redirect:재요청url로 해주면 됨
-//        return mv;
+//        return "redirect:/";
 //    }
+
+    /*
+    3. ModelAndView객체를 이용한 방법 -> 데이터를 담고 리턴형식까지 지정할 수 있음
+     */
+    @PostMapping("login.me")
+    public ModelAndView login(@ModelAttribute Member member, ModelAndView mv) {
+        DispatcherServlet dispatcherServlet = new DispatcherServlet();
+
+        System.out.println(member.getUserId());
+        System.out.println(member.getUserPwd());
+
+        mv.addObject("id", member.getUserId());
+        mv.addObject("pwd", member.getUserPwd());
+
+        mv.setViewName("redirect:/");
+
+        //url재요청을 원할시 return내용을 redirect:재요청url로 해주면 됨
+        return mv;
+    }
 }
