@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -145,12 +146,19 @@ public class MemberController {
     public ModelAndView login(Member member, ModelAndView mv, HttpSession session) {
 
         //url재요청을 원할시 return내용을 redirect:재요청url로 해주면 됨
-        Member loginMember = memberService.loginMember(member);
+        Member loginMember = memberService.loginMember(member.getUserId());
+
+        //loginMember의 userPwd --> 암호화된 userPwd
+        //member의 userPwd --> 암호화 전의 userPwd(평문)
+        // bCryptPasswordEncoder.matches(평문, 암호문); -> 해당 비밀번호가 암호화된 비밀번호와 일치하면 true 아니면 false반환
 
         if(loginMember == null) {
-            mv.addObject("errorMsg", "로그인 실패");
-            mv.setViewName("/common/errorPage");
-        } else {
+            mv.addObject("errorMsg", "아이디를 찾을 수 없습니다.");
+            mv.setViewName("common/errorPage");
+        } else if(!bCryptPasswordEncoder.matches(member.getUserPwd(), loginMember.getUserPwd())) {
+            mv.addObject("errorMsg", "비밀번호가 일치하지 않습니다.");
+            mv.setViewName("common/errorPage");
+        }else {
             session.setAttribute("loginUser", loginMember);
             mv.setViewName("redirect:/");
         }
@@ -200,6 +208,5 @@ public class MemberController {
     public String myPage(){
         return "member/myPage";
     }
-
 
 }

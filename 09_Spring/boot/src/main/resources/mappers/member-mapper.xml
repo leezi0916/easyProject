@@ -31,7 +31,7 @@
 		STATUS
 		FROM MEMBER
 		WHERE USER_ID = #{userId}
-		AND USER_PWD = #{userPwd}
+<!--		AND USER_PWD = #{userPwd}-->
 		AND STATUS = 'Y'
 	</select>
 	<insert id="insertMember">
@@ -56,4 +56,9 @@
 			#{address}
 		)
 	</insert>
+	<select id="idCheck" resultType="_int">
+		SELECT COUNT(*)
+			FROM MEMBER
+		  WHERE USER_ID = #{userId}
+	</select>
 </mapper>

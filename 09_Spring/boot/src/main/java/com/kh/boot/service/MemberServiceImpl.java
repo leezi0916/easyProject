@@ -12,13 +12,18 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
 
     @Override
-    public Member loginMember(Member m) {
-        System.out.println(m.getUserId());
-        return memberMapper.loginMember(m);
+    public Member loginMember(String userId) {
+
+        return memberMapper.loginMember(userId);
     }
 
     @Override
     public int insertMember(Member m) {
         return memberMapper.insertMember(m);
+    }
+
+    @Override
+    public int idCheck(String userId) {
+        return memberMapper.idCheck(userId);
     }
 }
