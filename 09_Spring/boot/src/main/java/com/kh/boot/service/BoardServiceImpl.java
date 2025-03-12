@@ -2,6 +2,7 @@ package com.kh.boot.service;
 
 import com.kh.boot.domain.vo.Board;
 import com.kh.boot.domain.vo.PageInfo;
+import com.kh.boot.domain.vo.Reply;
 import com.kh.boot.mappers.BoardMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
@@ -31,5 +32,25 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public int insertBoard(Board board) {
         return boardMapper.insertBoard(board);
+    }
+
+    @Override
+    public Board selectBoard(int bno) {
+        return boardMapper.selectBoard(bno);
+    }
+
+    @Override
+    public int increaseCount(int bno) {
+        return boardMapper.increaseCount(bno);
+    }
+
+    @Override
+    public int insertReply(Reply reply) {
+        return boardMapper.insertReply(reply);
+    }
+
+    @Override
+    public ArrayList<Reply> selectReply(int boardNo) {
+        return boardMapper.selectReply(boardNo);
     }
 }

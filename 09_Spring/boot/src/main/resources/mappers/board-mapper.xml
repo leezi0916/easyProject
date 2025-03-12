@@ -3,7 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kh.boot.mappers.BoardMapper">
-
     <resultMap id="boardResult" type="Board">
         <result column="BOARD_NO" property="boardNo"/>
         <result column="BOARD_TITLE" property="boardTitle"/>
@@ -12,6 +11,14 @@
         <result column="ORIGIN_NAME" property="originName"/>
         <result column="CHANGE_NAME" property="changeName"/>
         <result column="COUNT" property="count"/>
+        <result column="CREATE_DATE" property="createDate"/>
+        <result column="STATUS" property="status"/>
+    </resultMap>
+    <resultMap id="replyResult" type="Reply">
+        <result column="REPLY_NO" property="replyNo"/>
+        <result column="REPLY_CONTENT" property="replyContent"/>
+        <result column="REF_BNO" property="refBno"/>
+        <result column="REPLY_WRITER" property="replyWriter"/>
         <result column="CREATE_DATE" property="createDate"/>
         <result column="STATUS" property="status"/>
     </resultMap>
@@ -49,4 +56,49 @@
             #{changeName}
         )
     </insert>
+    <update id="increaseCount">
+        UPDATE BOARD
+            SET COUNT = COUNT + 1
+         WHERE BOARD_NO = #{bno}
+          AND STATUS = 'Y'
+    </update>
+    <select id="selectBoard" resultMap="boardResult">
+        SELECT BOARD_NO,
+        BOARD_TITLE,
+        BOARD_WRITER,
+        BOARD_CONTENT,
+        ORIGIN_NAME,
+        CHANGE_NAME,
+        COUNT,
+        TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
+        FROM BOARD
+        WHERE STATUS = 'Y'
+        AND BOARD_NO = #{bno}
+    </select>
+    <insert id="insertReply">
+        INSERT
+        INTO REPLY(
+            REPLY_NO,
+            REPLY_CONTENT,
+            REF_BNO,
+            REPLY_WRITER
+        ) VALUES(
+            SEQ_RNO.NEXTVAL,
+            #{replyContent},
+            #{refBno},
+            #{replyWriter}
+        )
+
+    </insert>
+    <select id="selectReply" resultMap="replyResult">
+        SELECT
+        REPLY_NO,
+        REPLY_CONTENT,
+        REPLY_WRITER,
+        TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
+        FROM REPLY
+        WHERE STATUS ='Y'
+        AND REF_BNO =#{bno}
+        ORDER BY REPLY_NO DESC
+    </select>
 </mapper>

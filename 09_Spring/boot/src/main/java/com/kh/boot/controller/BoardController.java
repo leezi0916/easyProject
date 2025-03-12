@@ -60,4 +60,19 @@ public class BoardController {
         }
 
     }
+
+    @GetMapping("detail.bo")
+    public String selectBoardDetail(int bno, Model model) {
+        int result = boardService.increaseCount(bno);
+
+        if(result > 0){
+            Board b = boardService.selectBoard(bno);
+            model.addAttribute("b", b);
+
+            return "board/boardDetailView";
+        } else{
+            model.addAttribute("errorMsg","게시글 조회 실패");
+            return "common/errorPage";
+        }
+    }
 }
