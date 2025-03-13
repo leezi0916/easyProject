@@ -16,12 +16,19 @@ public class APIBoardController {
     private final BoardService boardService;
 
     @PostMapping("/reply")
-    public String insertReply(@RequestBody Reply r) {
+    public String insertReply(Reply r) {
         return boardService.insertReply(r) > 0 ? "success" : "fail";
     }
 
     @GetMapping("/reply")
-    public ArrayList<Reply> selectReply(@RequestParam int boardNo) {
-        return boardService.selectReply(boardNo);
+    public ArrayList<Reply> getReplyList (int boardNo) {
+        return boardService.selectReplyList(boardNo);
     }
+
+    //produces : 해당 타입으로 응답을 반환해 줘.
+    @GetMapping(value = "/topn", produces = "application/json; charset=UTF-8")
+    public ArrayList<Board> getBoardTopN(String order, int limit) {
+        return boardService.getBoardTopN(order, limit);
+    }
+
 }

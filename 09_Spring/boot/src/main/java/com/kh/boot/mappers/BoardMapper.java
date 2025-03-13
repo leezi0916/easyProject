@@ -19,6 +19,10 @@ public interface BoardMapper {
     Board selectBoard(@Param("bno") int boardNo);
     //댓글추가
     int insertReply(Reply reply);
-    //댓글조회
-    ArrayList<Reply> selectReply(@Param("bno") int boardNo);
+    //댓글목록 가져오기
+    ArrayList<Reply> selectReplyList(@Param("boardNo") int boardNo);
+    //top5게시글 가져오기
+    ArrayList<Board> getBoardTopN(RowBounds rowBounds,@Param("order") String order);
+    //게시글 수정하기
+    int updateBoard(Board board);
 }

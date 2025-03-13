@@ -50,7 +50,20 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public ArrayList<Reply> selectReply(int boardNo) {
-        return boardMapper.selectReply(boardNo);
+    public ArrayList<Reply> selectReplyList(int boardNo) {
+        return boardMapper.selectReplyList(boardNo);
     }
+
+    @Override
+    public ArrayList<Board> getBoardTopN(String order, int limit) {
+        RowBounds rowBounds = new RowBounds(0, limit);
+        return boardMapper.getBoardTopN(rowBounds, order);
+    }
+
+    @Override
+    public int updateBoard(Board board) {
+        return boardMapper.updateBoard(board);
+    }
+
+
 }
