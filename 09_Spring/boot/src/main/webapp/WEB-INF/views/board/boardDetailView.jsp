@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -11,7 +12,7 @@
         table {width:100%;}
     </style>
 </head>
-<body>
+<body onload="init()">
 <jsp:include page="../common/header.jsp" />
 
 <div class="content">
@@ -69,7 +70,7 @@
         </div>
         <br><br>
 
-        <form action="" method="POST" id="postForm">
+        <form action="" method="GET" id="postForm">
             <input type="hidden" name="bno" value="${b.boardNo}">
         </form>
 
@@ -91,11 +92,6 @@
             }
         </script>
 
-
-        <form action="" method="post" id="postForm">
-            <input type="hidden" name=bno value="7">
-            <input type="hidden" name="filePath" value="이미지.jpg">
-        </form>
 
 
 
@@ -134,6 +130,10 @@
     <br><br>
 
     <script>
+        function init(){
+            drawReplyList({refBno : ${b.boardNo}});
+        }
+
         function addReply(){
             //댓글내용, 작성자, 게시글번호
             const boardNo = ${b.boardNo};
@@ -144,66 +144,69 @@
                 refBno: boardNo,
                 replyWriter: userId,
                 replyContent: content
-            }, function(replyList){
-                drawReplyList(replyList);
-            });
+            }, drawReplyList)
         }
 
+        function drawReplyList(data){
+            //TODO 1 댓글목록 가져와서 그리기
+            //data를 이용해서 댓글목록을 불러오고
+            //화면에 맞게 그려주기
 
+            //data.refBno전달해서 댓글리스트를 가져오기
+            getReplyList({boardNo: data.refBno}, function (replyList){
+                const countSpan = document.querySelector("#rcount");
+                countSpan.innerHTML = replyList.length;
+
+                const contentBody = document.querySelector("#replyArea tbody");
+                contentBody.innerHTML = "";
+
+                for(const reply of replyList){
+                    const replyTr = document.createElement("tr"); //<tr></tr>
+                    contentBody.appendChild(replyTr);
+
+                    const userIdTd = document.createElement('td');
+                    userIdTd.innerText = reply.user_id;
+                    replyTr.appendChild(userIdTd);
+
+                    const contentTd = document.createElement('td');
+                    contentTd.innerText = reply.reply_content;
+                    replyTr.appendChild(contentTd);
+
+                    const createDateTd = document.createElement('td');
+                    createDateTd.innerText = reply.create_date;
+                    replyTr.appendChild(createDateTd);
+                }
+            })
+        }
+
+        function getReplyList(data, callback){
+            $.ajax({
+                url: "/api/board/reply",
+                type: "get",
+                data: data,
+                success: function (res){
+                    callback(res)
+                }, error: function (){
+                    console.log("reply insert ajax 요청 실패")
+                }
+            })
+        }
 
         function insertReply(data, callback){
             $.ajax({
                 url: "/api/board/reply",
                 type: "post",
-                contentType: "application/json",
-                data: JSON.stringify(data),
+                data: data,
                 success: function (res){
-                    if(res === "success"){
-                    getReplyList(data.refBno, function(replyList){
-                        drawReplyList(replyList);
-                    });
-                } else {
-                        console.log("댓글 작성 실패");
+                    if(res === "success") {
+                        callback(data)
+                    } else {
+                        console.log("reply insert 실패")
                     }
-                },
-                error: function (){
-                    console.log("댓글 작성 요청 실패");
+                }, error: function (){
+                    console.log("reply insert ajax 요청 실패")
                 }
-            });
-        }
-
-
-        function getReplyList(boardNo, callback){
-            $.ajax({
-                url: "/api/board/reply",
-                type: "get",
-                dataType: "json",
-                data: {
-                    boardNo: boardNo
-                },
-                success: function (replyList){
-                    callback(replyList);
-                },
-                error: function (){
-                    console.log("댓글 조회 실패")
-                }
-            });
-        }
-
-        function drawReplyList(replyList){
-            //TODO 1 댓글목록 가져와서 그리기
-            //data를 이용해서 댓글목록을 불러오고
-            //화면에 맞게 그려주기
-            let str = ""
-            for(let r of replyList){
-                str += "<tr>" +
-                    "<td>"+r.replyWriter+"</td>" +
-                    "<td>"+r.replyContent+"</td>" +
-                    "<td>"+r.createDate+"</td>" +
-                    "</tr>";
-            }
-            const replyBody = document.querySelector("#replyArea tbody");
-            replyBody.innerHTML = str;
+            })
         }
     </script>
 </div>
