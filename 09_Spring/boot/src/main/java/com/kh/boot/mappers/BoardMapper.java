@@ -25,4 +25,5 @@ public interface BoardMapper {
     ArrayList<Board> getBoardTopN(RowBounds rowBounds,@Param("order") String order);
     //게시글 수정하기
     int updateBoard(Board board);
+
 }

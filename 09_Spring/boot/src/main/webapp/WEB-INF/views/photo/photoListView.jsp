@@ -15,6 +15,7 @@
             width: 100%;
             padding-top: 100%; /* 정사각형 유지 (비율 1:1) */
             position: relative;
+            margin-bottom: 40px;
         }
 
         .image-container img {
@@ -47,19 +48,21 @@
                 <th>글번호</th>
                 <th>작성자</th>
                 <th>제목</th>
+                <th>조회수</th>
                 <th>업로드 날짜</th>
             </tr>
             </thead>
             <tbody>
             <c:forEach var="p" items="${list}">
-                <tr>
+                <tr onclick = "location.href = 'detail.ph?pno=${p.photoNo}'">
                     <td>${p.photoNo}</td>
                     <td>${p.photoWriter}</td>
                     <td>${p.photoTitle}</td>
+                    <td>${p.count}</td>
                     <td>${p.createDate}</td>
                 </tr>
-                <tr>
-                    <td colspan="4">
+                <tr onclick = "location.href = 'detail.ph?pno=${p.photoNo}'">
+                    <td colspan="5" >
                         <div class="image-container">
                             <c:choose>
                                 <c:when test="${not empty p.changeName}">
@@ -108,19 +111,6 @@
         </div>
 
         <br clear="both"><br>
-
-        <form id="searchForm" action="" method="get" align="center">
-            <div class="select">
-                <select class="custom-select" name="condition">
-                    <option value="writer">작성자</option>
-                    <option value="title">제목</option>
-                </select>
-            </div>
-            <div class="text">
-                <input type="text" class="form-control" name="keyword">
-            </div>
-            <button type="submit" class="searchBtn btn btn-secondary">검색</button>
-        </form>
         <br><br>
     </div>
     <br><br>

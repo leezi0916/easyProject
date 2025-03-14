@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 
 @RequiredArgsConstructor
@@ -61,4 +62,69 @@ public class PhotoController {
             return "common/errorPage"; // 에러 페이지로 이동
         }
     }
+
+    @GetMapping("detail.ph")
+    public String selectPhotoDetail(int pno, Model model) {
+        int result = photoService.increaseCount(pno);
+
+        if(result > 0){
+            Photo p = photoService.selectPhoto(pno);
+            model.addAttribute("p", p);
+            return "photo/photoDetailView";
+        } else{
+            model.addAttribute("errorMsg","사진게시글 조회 실패");
+            return "common/errorPage";
+        }
+
+    }
+
+    @GetMapping("updateForm.ph")
+    public String updatePhoto(@RequestParam(value = "pno") int pno, Model model) {
+        model.addAttribute("p",photoService.selectPhoto(pno));
+        return "photo/photoUpdateForm";
+    }
+
+    @PostMapping("update.ph")
+    public String updatePhoto(@ModelAttribute Photo p, MultipartFile reupfile, HttpSession session, Model model) {
+        //새로운 첨부파일 있다면 저장 후 p객체에 파일명 수정
+        //p객체 전달받은 값으로 수정
+
+        //새로운 첨부파일이 있는가?
+        if(!reupfile.getOriginalFilename().equals("")){
+            //기존첨부파일 삭제
+            if(p.getChangeName() != null && !p.getChangeName().equals("")){
+                new File(session.getServletContext().getRealPath(p.getChangeName())).delete();
+            }
+
+            String changeName = Template.saveFile(reupfile, session, "/resources/uploadfile/");
+
+            p.setChangeName("/resources/uploadfile/" + changeName);
+            p.setOriginName(reupfile.getOriginalFilename());
+        }
+
+        int result = photoService.updatePhoto(p);
+
+        if(result > 0){
+            session.setAttribute("alertMsg", "사진게시글 수정 성공");
+            return "redirect:/detail.ph?pno=" + p.getPhotoNo();
+        } else {
+            model.addAttribute("errorMsg", "사진게시글 수정 실패");
+            return "common/errorPage";
+        }
+    }
+
+    @GetMapping("delete.ph")
+    public String deletePhoto(@RequestParam(value = "pno") int pno, HttpSession session, Model model) {
+        int result = photoService.deletePhoto(pno);
+
+        if(result > 0){
+            session.removeAttribute("p"); //여기
+            session.setAttribute("alertMsg", "사진게시글 삭제 성공");
+            return "redirect:/list.ph";
+        } else {
+            model.addAttribute("errorMsg", "사진게시글 삭제 실패");
+            return "common/errorPage";
+        }
+    }
+
 }

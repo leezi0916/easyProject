@@ -33,4 +33,24 @@ public class PhotoServiceImpl implements PhotoService {
     public int insertPhoto(Photo photo) {
         return photoMapper.insertPhoto(photo);
     }
+
+    @Override
+    public int increaseCount(int pno) {
+        return photoMapper.increaseCount(pno);
+    }
+
+    @Override
+    public Photo selectPhoto(int pno) {
+        return photoMapper.selectPhoto(pno);
+    }
+
+    @Override
+    public int updatePhoto(Photo p) {
+        return photoMapper.updatePhoto(p);
+    }
+
+    @Override
+    public int deletePhoto(int pno) {
+        return photoMapper.deletePhoto(pno);
+    }
 }

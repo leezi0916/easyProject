@@ -22,6 +22,7 @@
 		SELECT PHOTO_NO,
 		PHOTO_TITLE,
 		PHOTO_WRITER,
+		COUNT,
 		ORIGIN_NAME,
 		CHANGE_NAME,
 		TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
@@ -45,4 +46,35 @@
 		#{changeName}
 		)
 	</insert>
+	<update id="increaseCount">
+		UPDATE PHOTO
+		SET COUNT = COUNT + 1
+		WHERE PHOTO_NO = #{pno}
+		AND STATUS = 'Y'
+	</update>
+	<select id="selectPhoto" resultMap="photoResult">
+		SELECT PHOTO_NO,
+		PHOTO_TITLE,
+		PHOTO_WRITER,
+		COUNT,
+		ORIGIN_NAME,
+		CHANGE_NAME,
+		TO_CHAR(CREATE_DATE, 'YYYY-MM-DD') AS CREATE_DATE
+		FROM PHOTO
+		WHERE STATUS = 'Y'
+		AND PHOTO_NO = #{pno}
+		ORDER BY PHOTO_NO DESC
+	</select>
+	<update id="updatePhoto">
+		UPDATE PHOTO
+		SET PHOTO_TITLE = #{photoTitle},
+		ORIGIN_NAME = #{originName},
+		CHANGE_NAME = #{changeName}
+		WHERE PHOTO_NO = #{photoNo}
+	</update>
+	<delete id="deletePhoto">
+		DELETE
+		PHOTO WHERE PHOTO_NO = #{pno}
+		AND STATUS = 'Y'
+	</delete>
 </mapper>
