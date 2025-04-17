@@ -1,11 +1,12 @@
 package com.kh.boot.controller;
 
 import com.kh.boot.domain.vo.Member;
+import com.kh.boot.service.GoogleAPiService;
 import com.kh.boot.service.MemberService;
 import com.kh.boot.service.MemberServiceImpl;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 
-//@RequiredArgsConstructor
+import java.util.Map;
+
 @Controller
 public class MemberController {
 
@@ -35,26 +37,27 @@ public class MemberController {
           코드 결합도가 낮아지고 코드를 분리할 수 있음
 
           필드주입방식
-          스프링 컨테이너가 객체를 생성 후 , @Autowired붙은 필드에 의존성을 주입해주는 방식
+          스프링 컨테이너가 객체를 생성 후, @Autowired붙은 필드에 의존성을 주입해주는 방식
           장점 : 간결하다. 따로 생성자나 setter를 작성하지 않아도 된다.
-          단점 : 테스트가 어려움(필드주입방식은 객체생성시 의존성이 주입되지 않고 been에서 생성 후 주입받는 방식이기때문에
-                            테스트 진행시 임의에 객체를 생성하기가 어렵다.)
-                불변성을 보장할 수 없음. 객체생성시 의존성이 주입되어 고정되지 않기 때문에 클래스 생성 이후에 의존성이 변경 될 수 있음
+          단점 : 테스트가 어려움(핃드주입방식은 객체생성시 의존성이 주입되지 않고 been에서 생성 후 주입받는 방식이기때문에
+                              테스트 진행시 임의에 객체를 생성하기가 어렵다)
+                불변성을 보장할 수 없음. 객체생성시 의존성이 주입되어 고정되지 않기때문에 클래스 생성 이후에 의존성이 변경될 수 있음
 
           생성자주입방식
           스프링 컨테이너가 객체를 생성할 때 @Autowired어노테이션이 붙은 생성자를 통해 필요한 의존성을 주입하는 방식
-          장점 : 불변성이 보장, 테스트가 편리하다. 순환참조방지
+          장점 : 불변셩 보장, 테스트가 편리하다. 순환참조방지
      */
 
     private final MemberService memberService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final GoogleAPiService googleAPiService;
 
     @Autowired
-    public MemberController(MemberService memberService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public MemberController(MemberService memberService, BCryptPasswordEncoder bCryptPasswordEncoder, GoogleAPiService googleAPiService) {
         this.memberService = memberService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.googleAPiService = googleAPiService;
     }
-
 
     /*
     spring에서 클라이언트가 보낸 정보를 받는 방법
@@ -145,17 +148,19 @@ public class MemberController {
     @PostMapping("login.me")
     public ModelAndView login(Member member, ModelAndView mv, HttpSession session) {
 
+
         //url재요청을 원할시 return내용을 redirect:재요청url로 해주면 됨
         Member loginMember = memberService.loginMember(member.getUserId());
 
-        //loginMember의 userPwd --> 암호화된 userPwd
+        //loginMember의 userPwd --> 암호된 userPwd
         //member의 userPwd --> 암호화 전의 userPwd(평문)
-        // bCryptPasswordEncoder.matches(평문, 암호문); -> 해당 비밀번호가 암호화된 비밀번호와 일치하면 true 아니면 false반환
+        //bCryptPasswordEncoder.matches(평문, 암호문) -> 해당 비밀번호가 암호화된 비밀번호와 일치하면 true 아니면 false반환
 
-        if(loginMember == null) {
+
+        if(loginMember == null){
             mv.addObject("errorMsg", "아이디를 찾을 수 없습니다.");
             mv.setViewName("common/errorPage");
-        } else if(!bCryptPasswordEncoder.matches(member.getUserPwd(), loginMember.getUserPwd())) {
+        } else if(!bCryptPasswordEncoder.matches(member.getUserPwd(), loginMember.getUserPwd())){
             mv.addObject("errorMsg", "비밀번호가 일치하지 않습니다.");
             mv.setViewName("common/errorPage");
         }else {
@@ -166,27 +171,45 @@ public class MemberController {
         return mv;
     }
 
+    @GetMapping("login.go")
+    public ModelAndView loginGoogle(String code, ModelAndView mv, HttpSession session) {
+        System.out.println("code : " + code);
+        Map<String, String> userInfo =  googleAPiService.requestGoogleUserInfo(code);
+        String memberId = userInfo.get("email");
+
+        Member loginMember = memberService.loginMember(memberId);
+
+        if(loginMember == null){
+            session.setAttribute("alertMsg", "회원가입 후 이용이 가능합니다.");
+            mv.setViewName("redirect:/enrollForm.me?memberId=" + memberId);
+        } else {
+            session.setAttribute("loginUser", loginMember);
+            session.setAttribute("access_token", userInfo.get("access_token"));
+            mv.setViewName("redirect:/");
+        }
+        return mv;
+    }
+
     @GetMapping("logout.me")
     public String logout(HttpSession session) {
-        session.setAttribute("alertMsg","로그아웃 완료");
+        session.setAttribute("alertMsg", "로그아웃 완료");
         session.removeAttribute("loginUser");
 
         return "redirect:/";
     }
 
     @GetMapping("enrollForm.me")
-    public String enrollForm(ModelAndView mv, HttpSession session) {
-
+    public String enrollForm() {
         return "member/memberEnrollForm";
     }
 
     @PostMapping("insert.me")
-    public String insertMember(Member member, HttpSession session, Model model)  {
+    public String insertMember(Member member, HttpSession session, Model model) {
         /*
             age값은 int로 필드를 구성할 경우 빈문자열이 전달되면 형변환 과정에서 400에러가 발생
-            보통 400에러는 보내는 데이터와 받는 데이터의 타입이 일치하지 않을 때 발상한다.
+            보통 400에러는 보내는 데이터와 받는 데이터의 타입이 일치하지 않을 때 발생한다.
 
-            비밀번호를 사용자 입력 그대로 저장한다..(평문)
+            비밀번호를 사용자 입력 그대로 저장한다.(평문)
             Bcrypt방식을 이용해서 암호화작업 후 저장함
             -> 스프링 시큐리티에서 제공하는 모듈을 이용 (pom.xml에 라이브러리 추가 후 빈에 객체등록)
          */
@@ -194,19 +217,15 @@ public class MemberController {
         member.setUserPwd(pwd);
 
         int result = memberService.insertMember(member);
-        System.out.println(result);
-        if(result > 0) {
+        if (result > 0){
             session.setAttribute("alertMsg", "성공적으로 회원가입을 완료하였습니다.");
             return "redirect:/";
         } else {
-            model.addAttribute("errorMsg","회원가입실패");
+            model.addAttribute("errorMsg", "회원가입 실패");
             return "common/errorPage";
         }
     }
 
     @GetMapping("myPage.me")
-    public String myPage(){
-        return "member/myPage";
-    }
-
+    public String myPage() {return "member/myPage";}
 }
