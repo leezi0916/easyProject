@@ -14,6 +14,7 @@ import SignUp from './components/useState/SignUp'
 import LandingPage from './components/useState/LandingPage'
 import UseRefTest from './components/useRef/UseRefTest'
 import UseRefScroll from './components/useRef/UseRefScroll'
+import UseMemoTest from './components/useMemo/UseMemoTest'
 
 // const videoData = [{
 //   sumbnail:"https://i.ytimg.com/an_webp/ugR9MOkqK_g/mqdefault_6s.webp?du=3000&sqp=CKi9h8AG&rs=AOn4CLCHATRFJmBeirLG2dsfaKqEhEvgGw",
@@ -95,7 +96,8 @@ function App() {
       {/* <SignUp />  */}
       {/* <LandingPage /> */}
       {/* <UseRefTest /> */}
-      <UseRefScroll />
+      {/* <UseRefScroll /> */}
+      <UseMemoTest/>
     </>
   )
 }
