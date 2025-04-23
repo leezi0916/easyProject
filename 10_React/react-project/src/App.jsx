@@ -95,7 +95,7 @@ function App() {
       {/* <SignUp />  */}
       {/* <LandingPage /> */}
       {/* <UseRefTest /> */}
-      {/* <UseRefScroll /> */}
+      <UseRefScroll />
     </>
   )
 }
