@@ -58,7 +58,7 @@ const TodoList = () => {
 
     const addTodo = () => {
         if(newTodo.trim() === '') return;
-    
+        console.log('🖱️ 추가 버튼 클릭됨');
         const todo = {
             id : Date.now(),
             text : newTodo,
@@ -86,6 +86,9 @@ const TodoList = () => {
     const onDelete = (id) => {
         setTodos(todos.filter(todo => todo.id !== id));
     }
+
+
+    console.log('렌더링됨', newTodo);
 
     return (
         <Container>
