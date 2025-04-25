@@ -1,131 +1,117 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom'
+import { useUsers } from '../context/UserContext';
+import { StatusBadge  } from '../components/user/StatusBadge';
+
 const Container = styled.div`
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f0f4f8;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-`
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+`;
 
-const UserContainer = styled.div`
-    display: flex;
-    gap: 40px;
-    padding: 40px;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-`
+const Title = styled.h2`
+  color: #2c3e50;
+  margin-bottom: 24px;
+`;
 
-const PhotoContainer = styled.div`
-    flex-shrink: 0;
-    border-radius: 15px;
-    overflow: hidden;
-    width: 300px;
-    height: 400px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-`
+const InfoGroup = styled.div`
+  margin-bottom: 16px;
+`;
 
-const Photo = styled.img`
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-`
+const Label = styled.span`
+  display: inline-block;
+  width: 100px;
+  color: #7f8c8d;
+  font-weight: bold;
+`;
 
-const Table = styled.table`
-    width: 100%; 
-    border-collapse: collapse;
-    font-size: 18px;
-`
+const Value = styled.span`
+  color: #2c3e50;
+`;
 
-const Td = styled.td`
-    padding: 16px;
-    border-radius: 10px;
-    font-weight: 500;
-    text-align: left;
-    &:first-child {
-        width: 120px;
-        font-weight: bold;
-    }
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+`;
+
+const Button = styled.button`
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
   
-`
+  &:hover {
+    opacity: 0.9;
+  }
+`;
 
+const BackButton = styled(Button)`
+  background-color: #3498db;
+  color: white;
+`;
 
-const ButtonContainer = styled.div`
-    margin-top: 30px;
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-`
+const DeleteButton = styled(Button)`
+  background-color: #e74c3c;
+  color: white;
+`;
 
-const ActionButton = styled.button`
-    padding: 12px 24px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    
-    &:hover {
-        background-color: #0056b3;
-    }
-`
+function UserDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { getUserById, deleteUser } = useUsers();
+  const user = getUserById(parseInt(id));
 
-const UserDetail = ({ userData , onDeleteUser}) => {
-    const { id } = useParams();
-   const navigate = useNavigate(); // useNavigate 사용
-
-    const user = userData.find(user => user.id === parseInt(id));
-
-
+  useEffect(() => {
     if (!user) {
-        return <div>해당 유저를 찾을 수 없습니다.</div>;
+      navigate('/');
     }
+  }, [user, navigate]);
 
-    const handleDelete = () => {
-        onDeleteUser(parseInt(id));  
-        navigate('/'); 
-    };
-    return (
+  const handleDelete = () => {
+    if (window.confirm('정말로 이 사용자를 삭제하시겠습니까?')) {
+      deleteUser(parseInt(id));
+      navigate('/');
+    }
+  };
 
-        <>
-        <Container>
-            <div>
-                <UserContainer>
-                    <PhotoContainer>
-                        <Photo src={user.photo} alt="프로필 이미지" />
-                    </PhotoContainer>
-                    <Table>
-                        <tbody>
-                            <tr>
-                                <Td>이름:</Td>
-                                <Td>{user.name}</Td>
-                            </tr>
-                            <tr>
-                                <Td>나이:</Td> 
-                                <Td>{user.age}</Td>
-                            </tr>
-                            <tr>
-                                <Td>온라인 여부:</Td>
-                                <Td>{user.isOnline ? '🟢 온라인' : '🔴 오프라인'}</Td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                </UserContainer>
-                <ButtonContainer>
-                    <ActionButton onClick={handleDelete}>삭제</ActionButton>
-                    <ActionButton onClick={() => navigate(-1)}>뒤로가기</ActionButton>
-                </ButtonContainer>
-            </div>
-        </Container>
-    </>
+  if (!user) {
+    return null;
+  }
 
-    )
+  return (
+    <Container>
+      <Title>사용자 상세 정보</Title>
+      
+      <InfoGroup>
+        <Label>이름:</Label>
+        <Value>{user.name}</Value>
+      </InfoGroup>
+      
+      <InfoGroup>
+        <Label>나이:</Label>
+        <Value>{user.age}세</Value>
+      </InfoGroup>
+      
+      <InfoGroup>
+        <Label>상태:</Label>
+        <StatusBadge isOnline={user.isOnline}>
+          {user.isOnline ? '온라인' : '오프라인'}
+        </StatusBadge>
+      </InfoGroup>
+      
+      <ButtonGroup>
+        <BackButton onClick={() => navigate('/')}>목록으로</BackButton>
+        <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+      </ButtonGroup>
+    </Container>
+  );
 }
 
-export default UserDetail
+export default UserDetail; 

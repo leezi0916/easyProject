@@ -1,63 +1,64 @@
-import React from 'react'
-import styled from 'styled-components'
-import UserCard from '../components/UserCard'
-import { useNavigate } from 'react-router-dom'
-import { useCallback } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { useUsers } from '../context/UserContext';
+import UserCard from '../components/user/UserCard';
+import SearchBar from '../components/user/SearchBar';
+import { Button } from '../components/common/Button';
+import { useTheme } from '../context/ThemeContext';
 
 const Container = styled.div`
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: 45px;
-    gap: 16px;
-    border-radius: 15px;
-`
+  max-width: 1200px;
+  margin: 0 auto;
+`;
 
-const RegisterButton = styled.button`
-    margin: 16px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 10px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    width: 200px;
-    &:hover {
-        background-color: #45a049;
-    }
-`
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+`;
 
-const ButtonContainer = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: end;
-    margin-top: 20px;
-`
-const UserList = ({ userData }) => {
-    const navigate = useNavigate();
+const Title = styled.h1`
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#000000'};
+  font-size: 28px;
+`;
 
-    const handleUserClick = useCallback((id) => {
-        navigate(`/user/${id}`);
-    }, [navigate]);
+const UserGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+`;
 
-    return (
-        <div>
-            <ButtonContainer>
-                <RegisterButton onClick={() => navigate('/user')}>
-                    유저 등록
-                </RegisterButton>
-            </ButtonContainer>
+function UserList() {
+  const { isDarkMode } = useTheme();
+  const navigate = useNavigate();
+  const { users } = useUsers();
+  const [searchTerm, setSearchTerm] = useState('');
 
-            <Container>
-                {userData.map((user) => (
-                    <div key={user.id} onClick={() => handleUserClick(user.id)} style={{ cursor: 'pointer' }}>
-                        <UserCard user={user} />
-                    </div>
-                ))}
-            </Container>
-        </div>
-    );
-};
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-export default UserList
+  return (
+    <Container>
+      <Header>
+        <Title theme={isDarkMode ? 'dark' : 'light'}>사용자 목록</Title>
+        <Button onClick={() => navigate("/user")}>사용자 등록</Button>
+      </Header>
+      
+      <SearchBar
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      
+      <UserGrid>
+        {filteredUsers.map(user => (
+          <UserCard key={user.id} user={user} />
+        ))}
+      </UserGrid>
+    </Container>
+  );
+}
+
+export default UserList; 
