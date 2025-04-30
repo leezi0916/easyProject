@@ -57,6 +57,7 @@ body, html, #root {
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f7f9fc;
+  overflow: hidden; /* ✅ 추가 */
 }
 
 

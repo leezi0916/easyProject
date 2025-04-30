@@ -28,6 +28,12 @@ import Profile from './pages/Profile' // Profile 컴포넌트 import
 import Home from './pages/Home'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
+import styled from 'styled-components'
+import CounterDisplay from './components/CounterDisplay'
+import CounterControlls from './components/CounterControlls'
+import TodoList from './components/TodoList'
+import HomePage from './pages/HomePage'
+import PostListPage from './pages/PostListPage'
 // const videoData = [{
 //   sumbnail:"https://i.ytimg.com/an_webp/ugR9MOkqK_g/mqdefault_6s.webp?du=3000&sqp=CKi9h8AG&rs=AOn4CLCHATRFJmBeirLG2dsfaKqEhEvgGw",
 //   title: "빵빵이와 옥지의 진솔한 대화(물리)",
@@ -42,50 +48,27 @@ import NotFound from './pages/NotFound'
 //   channelName: "빵빵이의 일상",
 //   views: '8.3만',
 //   date: "2시간 전",
-// },{
-//   sumbnail:"https://i.ytimg.com/an_webp/ugR9MOkqK_g/mqdefault_6s.webp?du=3000&sqp=CKi9h8AG&rs=AOn4CLCHATRFJmBeirLG2dsfaKqEhEvgGw",
-//   title: "빵빵이와 옥지의 진솔한 대화(물리)",
-//   logo: "https://yt3.ggpht.com/wYRkjS6E0mMZ-np2jNwjVaCNzQMpxs1VkdQ_p25oe0aaSj0awd7f9xRUcrwI6rVOQE7kjZQ6l4A=s48-c-k-c0x00ffffff-no-rj",
-//   channelName: "빵빵이의 일상",
-//   views: '8.3만',
-//   date: "2시간 전",
-// },{
-//   sumbnail:"https://i.ytimg.com/an_webp/ugR9MOkqK_g/mqdefault_6s.webp?du=3000&sqp=CKi9h8AG&rs=AOn4CLCHATRFJmBeirLG2dsfaKqEhEvgGw",
-//   title: "빵빵이와 옥지의 진솔한 대화(물리)",
-//   logo: "https://yt3.ggpht.com/wYRkjS6E0mMZ-np2jNwjVaCNzQMpxs1VkdQ_p25oe0aaSj0awd7f9xRUcrwI6rVOQE7kjZQ6l4A=s48-c-k-c0x00ffffff-no-rj",
-//   channelName: "빵빵이의 일상",
-//   views: '8.3만',
-//   date: "2시간 전",
-// },{
-//   sumbnail:"https://i.ytimg.com/an_webp/ugR9MOkqK_g/mqdefault_6s.webp?du=3000&sqp=CKi9h8AG&rs=AOn4CLCHATRFJmBeirLG2dsfaKqEhEvgGw",
-//   title: "빵빵이와 옥지의 진솔한 대화(물리)",
-//   logo: "https://yt3.ggpht.com/wYRkjS6E0mMZ-np2jNwjVaCNzQMpxs1VkdQ_p25oe0aaSj0awd7f9xRUcrwI6rVOQE7kjZQ6l4A=s48-c-k-c0x00ffffff-no-rj",
-//   channelName: "빵빵이의 일상",
-//   views: '8.3만',
-//   date: "2시간 전",
-// },{
-//   sumbnail:"https://i.ytimg.com/an_webp/ugR9MOkqK_g/mqdefault_6s.webp?du=3000&sqp=CKi9h8AG&rs=AOn4CLCHATRFJmBeirLG2dsfaKqEhEvgGw",
-//   title: "빵빵이와 옥지의 진솔한 대화(물리)",
-//   logo: "https://yt3.ggpht.com/wYRkjS6E0mMZ-np2jNwjVaCNzQMpxs1VkdQ_p25oe0aaSj0awd7f9xRUcrwI6rVOQE7kjZQ6l4A=s48-c-k-c0x00ffffff-no-rj",
-//   channelName: "빵빵이의 일상",
-//   views: '8.3만',
-//   date: "2시간 전",
-// },{
-//   sumbnail:"https://i.ytimg.com/an_webp/ugR9MOkqK_g/mqdefault_6s.webp?du=3000&sqp=CKi9h8AG&rs=AOn4CLCHATRFJmBeirLG2dsfaKqEhEvgGw",
-//   title: "빵빵이와 옥지의 진솔한 대화(물리)",
-//   logo: "https://yt3.ggpht.com/wYRkjS6E0mMZ-np2jNwjVaCNzQMpxs1VkdQ_p25oe0aaSj0awd7f9xRUcrwI6rVOQE7kjZQ6l4A=s48-c-k-c0x00ffffff-no-rj",
-//   channelName: "빵빵이의 일상",
-//   views: '8.3만',
-//   date: "2시간 전",
-// },{
-//   sumbnail:"https://i.ytimg.com/an_webp/-lbqhtDyfe4/mqdefault_6s.webp?du=3000&sqp=CJ60h8AG&rs=AOn4CLAtde60hz-u8zCIWVaYD1tZRsB5fQ",
-//   title: "빵빵이의 황금벚꽃",
-//   logo: "https://yt3.ggpht.com/wYRkjS6E0mMZ-np2jNwjVaCNzQMpxs1VkdQ_p25oe0aaSj0awd7f9xRUcrwI6rVOQE7kjZQ6l4A=s48-c-k-c0x00ffffff-no-rj",
-//   channelName: "빵빵이의 일상",
-//   views: '2만',
-//   date: "4시간 전",
 // }]
 
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s;
+`
+const Section = styled.section`
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+`
 function App() {
   return (
     <>
@@ -137,6 +120,23 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter> */}
+      {/* <AppContainer>
+        <Section>
+          <h2>Zustand 전역 상태 관리</h2>
+          <CounterDisplay/>
+          <CounterControlls/>
+        </Section>
+        <Section>
+          <h2>zustand TodoList</h2>
+          <TodoList/>
+        </Section>
+      </AppContainer> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path ='/' element={<HomePage/>}/>
+          <Route path ='/posts' element={<PostListPage/>}/>
+        </Routes>
+      </BrowserRouter>
     </>
   );
 

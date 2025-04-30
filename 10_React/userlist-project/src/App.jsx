@@ -20,7 +20,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <UserProvider>
+      {/* <UserProvider> */}
         <AppContainer>
           <nav>
             <Link to="/" className="nav-link">HOME</Link>
@@ -33,7 +33,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppContainer>
-      </UserProvider>
+      {/* </UserProvider> */}
     </BrowserRouter>
   );
 }

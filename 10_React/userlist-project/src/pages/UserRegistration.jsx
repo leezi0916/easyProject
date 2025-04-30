@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { useUser } from '../context/UserContext';
+import useUserStore from '../store/useUserStore';
 
 const Wrapper = styled.div`
   display: flex;
@@ -58,7 +59,8 @@ const SubmitButton = styled.button`
 `;
 
 const UserRegistration = () => {
-    const { addUser } = useUser();
+    // const { addUser } = useUser();
+    const {addUser} = useUserStore();
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
     const [isOnline, setIsOnline] = useState(false);
@@ -85,7 +87,6 @@ const UserRegistration = () => {
         setAge('');
         setIsOnline(false);
         setPhoto('');
-
         navigate('/');
     };
 
