@@ -53,4 +53,11 @@ public class NoticeServiceImpl implements NoticeService {
         return NoticeDto.Response.toDto(notice);
     }
 
+    @Override
+    public void deleteNotice(Long noticeNo) {
+        Notice notice = noticeRepository.findOne(noticeNo)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지입니다."));
+        noticeRepository.delete(notice);
+    }
+
 }

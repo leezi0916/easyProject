@@ -39,5 +39,11 @@ public class NoticeController {
 
     }
 
+    //공지삭제
+    @DeleteMapping("{noticeNo}")
+    public ResponseEntity<Void> deleteNotice(@PathVariable Long noticeNo) {
+        noticeService.deleteNotice(noticeNo);
+        return ResponseEntity.ok().build();
+    }
 
 }

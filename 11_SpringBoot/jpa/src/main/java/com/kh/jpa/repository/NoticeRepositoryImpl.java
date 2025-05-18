@@ -22,4 +22,9 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     public Optional<Notice> findOne(Long noticeNo) {
         return Optional.ofNullable(em.find(Notice.class, noticeNo));
     }
+
+    @Override
+    public void delete(Notice notice) {
+        em.remove(notice);
+    }
 }

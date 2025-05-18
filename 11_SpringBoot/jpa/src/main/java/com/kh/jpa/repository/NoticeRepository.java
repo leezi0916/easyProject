@@ -7,5 +7,5 @@ import java.util.Optional;
 public interface NoticeRepository {
     void save(Notice notice);
     Optional<Notice> findOne(Long noticeNo);
-
+    void delete(Notice notice);
 }
