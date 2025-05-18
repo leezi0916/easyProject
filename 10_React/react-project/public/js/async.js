@@ -48,7 +48,7 @@ function getUser(data) {
     })
 }
 
-// getUser({id: 1})
+// getUser({id: 5})
 //     .then(result => {
 //         console.log("then 결과 : ", result);
 //     })
