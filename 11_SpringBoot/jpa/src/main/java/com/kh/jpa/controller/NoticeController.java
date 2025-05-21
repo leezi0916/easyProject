@@ -46,4 +46,10 @@ public class NoticeController {
         return ResponseEntity.ok().build();
     }
 
+    //제목으로 공지 검색
+    @GetMapping("/search/title")
+    public ResponseEntity<List<NoticeDto.Response>> searchNoticeByTitle(@RequestParam String title) {
+        return ResponseEntity.ok(noticeService.findByTitle(title));
+    }
+
 }

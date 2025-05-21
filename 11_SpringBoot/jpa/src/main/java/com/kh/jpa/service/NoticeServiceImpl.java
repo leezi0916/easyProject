@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional//여러개의 Repository에 보낼 값을 가지고 있다가 한번에 트랜잭션 처리할려고 중간 위치에 있는 서비스에 @Transactional작성
@@ -58,6 +61,13 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = noticeRepository.findOne(noticeNo)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지입니다."));
         noticeRepository.delete(notice);
+    }
+
+    @Override
+    public List<NoticeDto.Response> findByTitle(String title) {
+        return noticeRepository.findByTitle(title).stream()
+                .map(NoticeDto.Response::toDto)
+                .collect(Collectors.toList());
     }
 
 }

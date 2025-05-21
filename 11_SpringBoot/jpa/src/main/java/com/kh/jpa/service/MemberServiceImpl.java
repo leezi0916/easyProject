@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional //여러개의 Repository에 보낼 값을 가지고 있다가 한번에 트랜잭션 처리할려고 중간 위치에 있는 서비스에 @Transactional작성
@@ -50,6 +53,20 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findOne(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         memberRepository.delete(member);
+    }
+
+    @Override
+    public List<MemberDto.Response> findAllMembers() { //받아온게 리스트이므로 stream 형태로 변경해야 함
+        return memberRepository.findAll().stream()
+                .map(MemberDto.Response::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MemberDto.Response> findByName(String name) {
+        return memberRepository.findByName(name).stream()
+                .map(MemberDto.Response::toDto)
+                .collect(Collectors.toList());
     }
 
 }

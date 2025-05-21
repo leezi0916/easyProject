@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController//view를 반환하지 않고 데이터타입을 반환
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -29,6 +31,10 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findMember(userId));
     }
 
+    //전체 회원 조회
+    @GetMapping
+    public ResponseEntity<List<MemberDto.Response>> getMembers() { return ResponseEntity.ok(memberService.findAllMembers()); }
+
     //회원수정
     @PutMapping("/{userId}")
     public ResponseEntity<MemberDto.Response> updateMember(
@@ -43,5 +49,12 @@ public class MemberController {
         memberService.deleteMember(userId);
         return ResponseEntity.ok().build();
     }
+
+    //이름으로 회원 검색
+    @GetMapping("/search/name")
+    public ResponseEntity<List<MemberDto.Response>> searchMemberByName(@RequestParam String name) {
+        return ResponseEntity.ok( memberService.findByName(name));
+    }
+
 
 }

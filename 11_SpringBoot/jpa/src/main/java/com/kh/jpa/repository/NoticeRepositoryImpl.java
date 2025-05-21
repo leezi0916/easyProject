@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,5 +27,13 @@ public class NoticeRepositoryImpl implements NoticeRepository {
     @Override
     public void delete(Notice notice) {
         em.remove(notice);
+    }
+
+    @Override
+    public List<Notice> findByTitle(String title) {
+        String query = "select n from Notice n where n.noticeTitle LIKE :title";
+        return em.createQuery(query, Notice.class)
+                .setParameter("title", "%" + title + "%")
+                .getResultList();
     }
 }
